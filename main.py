@@ -39,6 +39,7 @@ class App:
 		profiler.enable()  # Start profiling
 		self.data.manager.tiles.load("level.data")
 		self.data.player.x, self.data.player.y = self.data.manager.tiles.world_data["player_position"]
+		# fix the window size when the game starts
 		self.data.manager.window.resize(self.data.manager.window.width, self.data.manager.window.height)
 		while self.data.running:
 			self.data.manager.events()
