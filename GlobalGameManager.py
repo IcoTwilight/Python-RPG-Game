@@ -131,7 +131,7 @@ class TilesManager(SubManager):
 	def add_tile_info(self, tile: dict) -> None:
 		self.stored_tiles.append(tile)
 	def load_tiles(self, file:str) -> None:
-		surface = self.app.data.manager.window.load_image(file)
+		surface = self.app.data.manager.window.load_image(file, False)
 		for y in range(surface.get_height() // self.stored_tiles_size):
 			for x in range(surface.get_width() // self.stored_tiles_size):
 				s = surface.subsurface((x * self.stored_tiles_size, y * self.stored_tiles_size, self.stored_tiles_size, self.stored_tiles_size))
@@ -166,7 +166,7 @@ class TilesManager(SubManager):
 		try:
 			return self.size_cache[(id, size)]
 		except:
-			self.size_cache[(id, size)] = pygame.transform.scale(self.get_tile_info(id)["image"], (size // self.app.data.manager.window.display_down_size, size // self.app.data.manager.window.display_down_size)).convert_alpha()
+			self.size_cache[(id, size)] = pygame.transform.scale(self.get_tile_info(id)["image"], (size // self.app.data.manager.window.display_down_size, size // self.app.data.manager.window.display_down_size)).convert()
 			return self.size_cache[(id, size)]
 	
 	def get_all_tiles(self):
@@ -294,7 +294,7 @@ class Window(SubManager):
 	def render(self):
 		pygame.display.flip()
 		self.screen.fill((0, 0, 0))
-		self.dt = self.clock.tick(0)
+		self.dt = self.clock.tick(60)
 	def draw(self, surface, position):
 		self.screen.blit(surface, position)
 	def draw_to(self, surface, position, target_surface):
@@ -305,8 +305,13 @@ class Window(SubManager):
 		self.display.blit(surface, position)
 		w, h = surface.copy().get_size()
 		return pygame.rect.Rect(*position, w, h)
-	def load_image(self, path):
-		return pygame.image.load(path).convert_alpha()
+	def load_image(self, path, transparent = True):
+		image_surface = pygame.image.load(path)
+		if transparent:
+			image_surface = image_surface.convert_alpha()
+		else:
+			image_surface = image_surface.convert()
+		return image_surface
 	def draw_rect(self, rect, color):
 		pygame.draw.rect(self.screen, color, rect)
 	def compute_display_down_size(self):
@@ -373,7 +378,6 @@ class EventsManager(SubManager):
 			self.app.data.manager.tiles.set_tile(*self.app.data.manager.mouse.tile_position, {"id": 15}, apply = True, depth = 1)
 		if self.app.data.manager.mouse.pressed[0]:
 			self.app.data.manager.tiles.apply_rules(*self.app.data.manager.mouse.tile_position, depth = 0)
-			print(*self.app.data.manager.mouse.tile_position)
 		
 		self.app.data.manager.sprites.update(pressed, self.app.data.manager.window.dt)
 

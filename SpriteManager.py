@@ -12,8 +12,9 @@ class Sprite:
 		self.size = (1, 1)
 		self.rect = pygame.Rect(self.x, self.y, *self.size)
 	def move(self, x, y, dt):
-		self.x += x * dt
-		self.y += y * dt
+		# don't let the player move more than 1 tile/frame
+		self.x += x
+		self.y += y
 	def draw(self):
 		size = self.size[0] * self.app.data.manager.tiles.tile_size, self.size[1] * self.app.data.manager.tiles.tile_size
 		pos = self.app.data.manager.camera.get_from_world(self.x , self.y)
@@ -39,7 +40,7 @@ class Player(Sprite):
 	def __init__(self, app):
 		super().__init__(app)
 		self.size = (1, 1)
-		self.speed = 0.01
+		self.speed = 0.02
 		surface: pygame.Surface = self.app.data.manager.window.load_image("tile_sets/Slime.png")
 		self.frames.append(surface.subsurface((0 * 16, 0 * 16), (16, 16)))
 		self.frames.append(surface.subsurface((1 * 16, 0 * 16), (16, 16)))

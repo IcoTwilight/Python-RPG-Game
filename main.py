@@ -42,14 +42,14 @@ class App:
 		# fix the window size when the game starts
 		self.data.manager.window.resize(self.data.manager.window.width, self.data.manager.window.height)
 		while self.data.running:
+			# set the caption to the current fps
+			pygame.display.set_caption("FPS: " + str(self.data.manager.window.clock.get_fps()))
 			self.data.manager.events()
 			self.data.manager.camera.get_on_screen()
 			self.data.manager.tiles.draw()
 			self.data.manager.sprites.draw()
-			# set the caption to the current fps
-			pygame.display.set_caption("FPS: " + str(self.data.manager.window.clock.get_fps()))
 			self.data.manager.window.update()
-			self.data.manager.window.draw_text(str(self.data.manager.camera.zoom), (0, 0, 0), (0, 0))
+			self.data.manager.window.draw_text(str((self.data.player.x, self.data.player.y)), (0, 0, 0), (0, 0))
 			self.data.manager.mouse.draw()
 			self.data.manager.window.render()
 		"""if self.data.connectionEstablished:
@@ -120,7 +120,6 @@ class App:
 					mouse_just_released[event.button - 1] = True
 			self.data.manager.mouse.update(mouse_just_pressed, mouse_just_released)
 			mouse_position = self.data.manager.mouse.position
-			print(mouse_just_pressed)
 			if self.data.main_menu == "main":
 				play_button.draw(self.data.manager.window.display, mouse_just_pressed, mouse_position)
 				multiplayer_button.draw(self.data.manager.window.display, mouse_just_pressed, mouse_position)
